@@ -48,7 +48,12 @@
 			for(var i in this.answers) {
 				var q = tasks[this.answers[i].taskIndex].ru;
 				var a = this.answers[i].answerText;
-				html += '<h5>' + q + '</h5><p>' + a + '<p>';		
+				var r = tasks[this.answers[i].taskIndex].rule;
+				r = r ? ('<p>' + r + '<p>') : '';
+				html += 
+					'<h5>' + q + '</h5>' + 
+					r + 
+					'<p>' + a + '<p>';		
 			}
 			document.getElementById('answers').innerHTML = html;
 		}
