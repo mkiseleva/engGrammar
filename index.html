@@ -13,16 +13,63 @@
 		}
 
 	</style>
-	<script type="javascript" src="file://tasks.js"></script>
+	<script src="https://raw.github.com/mkiseleva/engGrammar/master/tasks.js"></script>
 	<script>
-		alert(tasks);	
+		Application = function (){
+			this.answers = [];
+			this.curentTaskIndex = -1;
+		};
+		Application.prototype.bodyLoaded = function() {
+			var thisClosure = this;
+			document.forms[0].onsubmit = function(){
+				return thisClosure.formSubmitHandler.apply(thisClosure, []);
+			};
+			this.printRandomTask();
+		}
+		Application.prototype.formSubmitHandler = function() {
+			this.saveAnswer();
+			this.printRandomTask();
+			return false;
+		}
+		Application.prototype.saveAnswer = function() {
+			var answerText = document.getElementById('answer').value;
+			var answer = {};
+			answer['answerText'] = answerText;
+			answer['taskIndex'] = this.curentTaskIndex;
+			this.answers.push(answer);
+			document.getElementById('answer').value = '';
+			if(this.answers.length >= 10) {
+				this.printAnswers();
+				this.answers=[];
+			}
+		}
+		Application.prototype.printAnswers = function() {
+			var html = '';
+			for(var i in this.answers) {
+				var q = tasks[this.answers[i].taskIndex].ru;
+				var a = this.answers[i].answerText;
+				html += '<h5>' + q + '</h5><p>' + a + '<p>';		
+			}
+			document.getElementById('answers').innerHTML = html;
+		}
+		Application.prototype.printRandomTask = function() {
+			this.curentTaskIndex = getRandomInt(0, tasks.length - 1);
+			document.getElementById('taskHeader').innerHTML = tasks[this.curentTaskIndex].ru;
+			document.getElementById('answer').focus();
+		}
+		function getRandomInt(min, max) {
+	  		return Math.floor(Math.random() * (max - min + 1)) + min;
+		}
+		application = new Application();
 	</script>
 </head>
-<body>
+<body onload="application.bodyLoaded();">
 	<form>
-		<h1>Если б я имел коня, я б его кормил 3 дня</h1>
-		<input type="text"/>
+		<h1 id="taskHeader">Возможно у вас отключен javascript или произошла ошибка</h1>
+		<input id="answer" type="text"/>
 		<input type="submit"/>
 	</form>
+	<div id="answers">
+	</div>
 </body>
 </html>
