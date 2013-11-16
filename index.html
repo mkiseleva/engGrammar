@@ -42,6 +42,9 @@
 				this.printAnswers();
 				this.answers=[];
 			}
+			else {
+				document.getElementById('answers').innerHTML = "";
+			}
 		}
 		Application.prototype.printAnswers = function() {
 			var html = '';
